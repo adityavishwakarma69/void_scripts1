@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+
+updates=$(flatpak remote-ls --updates)
+updatecount=$(printf "$updated" | wc -l)
+
+if [[ $1 == "list" ]]; then
+	printf "$updates"
+else
+	echo $updatecount
+fi

@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+while :
+do
+	cat ~/.local/state/playbackctl/playercurrent
+	echo ""
+	sleep 0.1
+done

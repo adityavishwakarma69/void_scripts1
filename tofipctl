@@ -1,0 +1,11 @@
+#!/usr/bin/bash
+
+source ~/.cache/wal/colors.sh
+
+player=$(playerctl -l | tofi --background-color=${background} --default-result-color=${foreground} --prompt-color=${color14} --input-color=${color14} --selection-color=${color14} --prompt-text=" 󰤺 ")
+echo $player
+if [ $player != '' ]; then
+	option=$(printf "play-pause\nnext\nstop\nnext\nprevious" | tofi --background-color=${background} --default-result-color=${foreground} --prompt-color=${color14} --input-color=${color14} --selection-color=${color14} --prompt-text=" 󰝚 ")
+	echo $option
+	playerctl --player=$player $option
+fi

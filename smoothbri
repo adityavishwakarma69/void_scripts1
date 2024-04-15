@@ -1,0 +1,34 @@
+#!/usr/bin/bash
+
+cur=$(brightnessctl g)
+new=$2
+max=$(brightnessctl m)
+if [ $(echo $new | rev | cut -c 1) = '%' ]; then
+	new=$((max*$(echo $new | rev | cut -c 2- | rev)/100))
+fi
+if [ $1 = 's' ]; then
+	if [ $cur -gt $new ]; then
+		for i in $(seq $new $cur)
+		do
+			brightnessctl s 1-
+		done
+	fi
+	if [ $new -gt $cur ]; then
+		for i in $(seq $cur $new)
+		do
+			brightnessctl s 1+
+		done
+	fi
+fi
+if [ $1 = 'i' ]; then
+	for i in $(seq 1 $new)
+	do
+		brightnessctl s 1+
+	done
+fi
+if [ $1 = 'd' ]; then
+	for i in $(seq 1 $new)
+	do
+		brightnessctl s 1-
+	done
+fi

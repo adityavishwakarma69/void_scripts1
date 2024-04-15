@@ -1,0 +1,12 @@
+#!/usr/bin/bash
+updatelist=$(xbps-install --memory-sync --dry-run --update | grep -Fe update -e install)
+updates=$(printf "$updatelist" | wc -l)
+isxbpsout=$(printf "$updatelist" | grep xbps | wc -l)
+
+if [ $isxbpsout -ne 0 ]; then
+	exit 2
+elif [[ $1 == 'list' ]]; then
+	printf "$updatelist"
+else
+	echo $updates
+fi

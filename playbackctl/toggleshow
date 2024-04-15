@@ -1,0 +1,6 @@
+#!/usr/bin/bash
+
+eww-wayland close playbackctl
+if [ $? != 0 ]; then
+	eww-wayland open playbackctl
+fi

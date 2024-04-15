@@ -1,0 +1,14 @@
+#!/usr/bin/bash
+
+while :
+do
+	sleep 0.2
+	state=$(playerctl --player=$(cat ~/.local/state/playbackctl/playercurrent) status)
+	if [ $state = "Stopped" ]; then
+		echo 
+	elif [ $state = "Paused" ]; then
+		echo 
+	elif [ $state = "Playing" ]; then
+		echo 
+	fi
+done

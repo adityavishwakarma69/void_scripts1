@@ -1,0 +1,3 @@
+#!/usr/bin/bash
+
+flatpak update -y > ~/.cache/updates/flatpak-$(date +"%H%M%S%d%m%y").log

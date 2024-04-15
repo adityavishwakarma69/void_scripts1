@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+
+while :
+do
+	playerctl --player=$(cat ~/.local/state/playbackctl/playercurrent) metadata --format '{{ mpris:artUrl }}' | cut -c 8-
+	sleep 0.2
+done

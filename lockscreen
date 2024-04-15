@@ -1,0 +1,14 @@
+#!/usr/bin/bash
+while getopts li flag
+do
+    case "${flag}" in
+	i)
+	grim ~/.cache/lockscreen/background
+	#gm convert ~/.cache/gtklock/background -blur 3x3 ~/.cache/gtklock/background
+	gm convert ~/.cache/lockscreen/background  -fill black -colorize 20% ~/.cache/lockscreen/background
+	;;
+        l)
+	gtklock -d
+	;;
+    esac
+done

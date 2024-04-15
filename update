@@ -1,0 +1,84 @@
+#!/bin/bash
+
+opt0=$(notify-send "Update Manager" "Did you call me? 🤔" --action="✅" --action="❌" -r 0)
+if [ $opt0 -ne 0 ]; then
+	notify-send "Update Manager" "Why Did you wake me up 😩" -r 0
+	exit 0
+fi
+
+#Test Internet
+wget -q --spider http://google.com
+if [ $? -ne 0 ]; then
+	notify-send "Update Manager" "Turn On The Internet 🤓" -r 0
+	exit 69
+else
+	notify-send "Update Manager" "Internet Seems to be working (https://google.com exists)" -r 0
+fi
+
+job="0" #just for interaction
+#Fetch List Of Packages available to upgrade (XBPS)
+notify-send "Update Manager" "Fetching Packages (XBPS)" -r 1
+xbpacks=$(~/.local/share/scripts/update-manager/fetch-xbps list)
+xbpackscount=$(printf "$xbpacks" | wc -l)
+
+if [ $? -ne 0 ]; then #Test if xbps is uptodate
+	notify-send "Update Manager" "Seems like xbps is not uptodate try upgrading manually" -r 1
+	exit 1
+elif [ $xbpackscount -eq 0 ]; then #Test if there are any packages required to update
+	notify-send "Update Manager" "No Job" -r 1
+	updatelogxbps="no job (xbps)\n"
+else #This runs if no issues are found
+	opt1=$(notify-send "Update Manager" "${xbpackscount} xbps packages needs upgrade, Proceed?" --action='✅' --action='❌' -r 1 --wait)
+	if [ $opt1 -eq 0 ]; then
+		updatelogxbps=$(pkexec xbps-install -Suy)
+		if [ $? -ne 0 ]; then
+			notify-send "Imposter is SUS" "Who are you? Doesn't Look like master? Don't dare touch my master! 👹👹"
+			exit 0
+		fi
+		notify-send "Update Manager" "Updated the system packages (XBPS)" -r 1
+		job=$(($job + 1))
+	else
+		updatelogxbps="User Denied Upgrades (xbps)\n"
+	fi
+fi
+
+#
+#Fetch List Of Packages available to upgrade (flatpaks)
+notify-send "Update Manager" "Fetching Packages (Flatpaks)" -r 2
+flatpaks=$(~/.local/share/scripts/update-manager/fetch-flatpak list)
+flatpakscount=$(printf "$flatpaks" | wc -l)
+
+#Check if any packages need upgrade
+if [ $flatpakscount -eq 0 ]; then
+	notify-send "Update Manager" "No Job" -r 2
+	updatelogflatpak="no job (flatpak\n)"
+else
+	opt2=$(notify-send "Update Manager" "${flatpakscount} flatpaks needs upgrade, Proceed" --action='✅' --action='❌' -r 2 --wait)
+	if [[ $opt2 -eq 0 ]]; then
+		updatelogflatpak=$(flatpak update -y)
+		notify-send "Update Manager" "Updated the desktop packages (flatpak)" -r 2
+		job=$((job + 1))
+	else
+		updatelogflatpak="User Denied Upgrades (flatpak)\n"
+	fi
+fi
+
+sleep 2
+if [ $job -eq 2 ]; then
+	notify-send "Update Manager" "That was some work 😮" -r 3
+elif [ $job -eq 1 ]; then
+	notify-send "Update Manager" "That's it, today was a nice day 😇" -r 3
+else
+	notify-send "Update Manager" "Why did you call me, to make fun of me? 😡" -r 3
+fi
+sleep 3
+opt3=$(notify-send "Update Manager" "Anyways do you want to save the logs" --action='✅' --action='❌' -r 3 --wait)
+if [[ opt3 -eq 0 ]]; then
+	finallog="$(printf "${updatelogxbps}\n") $(printf "${updatelogflatpak}\n Log Ends")"
+	logfilepath="${HOME}/.cache/updates/xbps-$(date +"%H%M%S%d%m%y").log"
+	mkdir ~/.cache/updates/ -p
+	echo "$finallog" >$logfilepath
+	notify-send "Update Manager" "File Logged ${logfilepath}, now let me sleep" -r 4
+else
+	notify-send "Update Manager" "As you wish" -r 4
+fi

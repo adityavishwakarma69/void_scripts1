@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#Generate Colors
+wal -i $1 -a $2 --saturate $3
+#Copy Wallpaper
+cp $1 ~/.local/share/bg
+#Reload Notification Style
+swaync-client --reload-css
+#Reload Sway
+swaymsg reload
+#Generate Colored Icons For Wlogout
+convert ~/.local/share/wlogout/icons/* -alpha extract -background $(sed -n 16p ~/.cache/wal/colors) -alpha shape ~/.cache/wlogout/icons/icon.png
+#Reload Wallpaper
+#swww img $1

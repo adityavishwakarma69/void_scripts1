@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+
+path=$(date +"${HOME}/Pictures/Screenshots/SCREENSHOT-%d-%m-%y_%H_%M_%S.png")
+grim -g "$(slurp)" $path
+if [ $? = '0' ]; then
+	notify-send -i $path --app-name=screenshot SCREENSHOT $path
+fi

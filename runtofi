@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+source ~/.cache/wal/colors.sh
+tofi-drun --background-color=${background} --default-result-color=${foreground} --prompt-color=${color14} --input-color=${color14} --selection-color=${color14}

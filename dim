@@ -1,0 +1,28 @@
+#!/usr/bin/bash
+cur=$(cat /sys/class/backlight/intel_backlight/brightness)
+state=$(cat ~/.local/state/brightness/dim)
+if [ $1 == 'toggle' ]; then
+	if [ $state = 'on' ]; then
+		~/.local/share/scripts/smoothbri s $((cur*2))
+		echo "off" > ~/.local/state/brightness/dim
+
+	elif [ $state = 'off' ]; then
+		~/.local/share/scripts/smoothbri s $((cur/2))
+		echo "on" > ~/.local/state/brightness/dim
+	else
+		echo "invalid state detected making new file"
+		echo "off" > ~/.local/state/brightness/dim
+	fi
+elif [ $1 == 'on' ]; then
+	if [ $state = 'off' ]; then
+		~/.local/share/scripts/smoothbri s $((cur/2))
+		echo "on" > ~/.local/state/brightness/dim
+	fi
+elif [ $1 == 'off' ]; then
+	if [ $state = 'on' ]; then
+		~/.local/share/scripts/smoothbri s $((cur*2))
+		echo "off" > ~/.local/state/brightness/dim
+	fi
+else
+	echo "usage dim on|off|toggle"
+fi

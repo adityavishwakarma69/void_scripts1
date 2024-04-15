@@ -1,0 +1,3 @@
+#!/usr/bin/bash
+
+pkexec xbps-install -Suy > ~/.cache/updates/xbps-$(date +"%H%M%S%d%m%y").log
